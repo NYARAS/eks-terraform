@@ -6,3 +6,4 @@ getter*/
 kubeconfig*
 *.png
 .*hcl
+*.tfvars
