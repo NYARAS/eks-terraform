@@ -1,4 +1,3 @@
-
 # create some variables
 variable "asg_instance_types" {
   type        = list(string)
