@@ -38,7 +38,7 @@ module "eks-cluster" {
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
-    # allow connections from EKS to EKS (internal calls)
+    # allow internal connections from EKS to EKS
     ingress_self_all = {
       protocol  = "-1"
       from_port = 0
@@ -49,7 +49,7 @@ module "eks-cluster" {
   }
 }
 
-# create IAM role for AWS Load Balancer Controller, and attach to EKS OIDC
+# IAM role for AWS Load Balancer Controller, and attach to EKS OIDC
 module "eks_ingress_iam" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 4.22.0"
@@ -65,7 +65,7 @@ module "eks_ingress_iam" {
   }
 }
 
-# create IAM role for External DNS, and attach to EKS OIDC
+# IAM role for External DNS, and attach to EKS OIDC
 module "eks_external_dns_iam" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 4.22.0"
@@ -82,7 +82,7 @@ module "eks_external_dns_iam" {
   }
 }
 
-# set spot fleet Autoscaling policy
+# set spot fleet and on-demand Autoscaling policy
 resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
   count = length(var.eks_managed_node_groups)
 
