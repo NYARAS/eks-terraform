@@ -60,7 +60,7 @@ module "eks_ingress_iam" {
 
   oidc_providers = {
     main = {
-      provider_arn               = module.cluster.oidc_provider_arn
+      provider_arn               = module.eks-cluster.oidc_provider_arn
       namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
     }
   }
@@ -78,7 +78,7 @@ module "eks_external_dns_iam" {
 
   oidc_providers = {
     main = {
-      provider_arn               = module.cluster.oidc_provider_arn
+      provider_arn               = module.eks-cluster.oidc_provider_arn
       namespace_service_accounts = ["kube-system:external-dns"]
     }
   }
@@ -88,8 +88,8 @@ module "eks_external_dns_iam" {
 resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
   count = length(var.eks_managed_node_groups)
 
-  name                   = "${module.cluster.eks_managed_node_groups_autoscaling_group_names[count.index]}-autoscaling-policy"
-  autoscaling_group_name = module.cluster.eks_managed_node_groups_autoscaling_group_names[count.index]
+  name                   = "${module.eks-cluster.eks_managed_node_groups_autoscaling_group_names[count.index]}-autoscaling-policy"
+  autoscaling_group_name = module.eks-cluster.eks_managed_node_groups_autoscaling_group_names[count.index]
   policy_type            = "TargetTrackingScaling"
 
   target_tracking_configuration {
