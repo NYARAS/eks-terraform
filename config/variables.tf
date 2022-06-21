@@ -57,29 +57,29 @@ variable "developer_users" {
   description = "List of Kubernetes developers."
 }
 
-variable "dns_base_domain" {
+variable "dns_hosted_zone" {
   type        = string
   description = "DNS Zone name to be used from EKS Ingress."
 }
-variable "ingress_gateway_name" {
+variable "load_balancer_name" {
   type        = string
   description = "Load-balancer service name."
 }
-variable "ingress_gateway_iam_role" {
+variable "alb_controller_iam_role" {
   type        = string
   description = "IAM Role Name associated with load-balancer service."
 }
-variable "ingress_gateway_chart_name" {
+variable "alb_controller_chart_name" {
   type        = string
-  description = "Ingress Gateway Helm chart name."
+  description = "AWS Load Balancer Controller Helm chart name."
 }
-variable "ingress_gateway_chart_repo" {
+variable "alb_controller_chart_repo" {
   type        = string
-  description = "Ingress Gateway Helm repository name."
+  description = "AWS Load Balancer Controller Helm repository name."
 }
-variable "ingress_gateway_chart_version" {
+variable "alb_controller_chart_version" {
   type        = string
-  description = "Ingress Gateway Helm chart version."
+  description = "AWS Load Balancer Controller Helm chart version."
 }
 
 # create some variables
