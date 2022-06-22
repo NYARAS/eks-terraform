@@ -21,11 +21,11 @@ module "config" {
   spot_termination_handler_chart_version   = var.spot_termination_handler_chart_version
   spot_termination_handler_chart_namespace = var.spot_termination_handler_chart_namespace
   dns_hosted_zone                          = var.dns_hosted_zone
-  load_balancer_name                     = var.load_balancer_name
-  alb_controller_iam_role                 = var.alb_controller_iam_role
-  alb_controller_chart_name               = var.alb_controller_chart_name
-  alb_controller_chart_repo               = var.alb_controller_chart_repo
-  alb_controller_chart_version            = var.alb_controller_chart_version
+  load_balancer_name                       = var.load_balancer_name
+  alb_controller_iam_role                  = var.alb_controller_iam_role
+  alb_controller_chart_name                = var.alb_controller_chart_name
+  alb_controller_chart_repo                = var.alb_controller_chart_repo
+  alb_controller_chart_version             = var.alb_controller_chart_version
   external_dns_iam_role                    = var.external_dns_iam_role
   external_dns_chart_name                  = var.external_dns_chart_name
   external_dns_chart_repo                  = var.external_dns_chart_repo
