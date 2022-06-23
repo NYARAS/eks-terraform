@@ -20,7 +20,7 @@ external_dns_values = {
   "sources"            = "{ingress}"
 }
 
-admin_users     = ["calvine-otieno", "jannet-kioko"]
+admin_users     = ["calvine.devops", "jannet-kioko"]
 developer_users = ["elvis-kariuki", "peter-donald"]
 
 dns_hosted_zone              = "calvineotieno.com"
