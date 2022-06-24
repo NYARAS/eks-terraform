@@ -1,0 +1,116 @@
+---
+stages:
+  - pre-setup
+  - code-quality
+  - validate
+  - plan
+  - apply
+  - destroy
+
+image:
+  name: hashicorp/terraform:1.1.9
+  entrypoint:
+    - env
+
+.terraform_init_template: &terraform_init_template
+  before_script:
+    - terraform init -input=false -backend-config=backend.tfvars
+
+.plan_template: &plan_template
+  stage: plan
+  <<: *terraform_init_template
+  script:
+    - (terraform workspace select ${CI_ENVIRONMENT_NAME} ||
+      terraform workspace new ${CI_ENVIRONMENT_NAME})
+    - terraform plan -out=$CI_ENVIRONMENT_NAME-plan.tfplan
+      -var-file=base-${CI_ENVIRONMENT_NAME}.tfvars
+      -var-file=config-${CI_ENVIRONMENT_NAME}.tfvars
+      -input=false
+  artifacts:
+    paths:
+      - $CI_ENVIRONMENT_NAME-plan.tfplan
+
+.apply_template: &apply_template
+  stage: apply
+  when: manual
+  <<: *terraform_init_template
+  script:
+    - (terraform workspace select ${CI_ENVIRONMENT_NAME} ||
+      terraform workspace new ${CI_ENVIRONMENT_NAME})
+    - terraform apply -input=false $CI_ENVIRONMENT_NAME-plan.tfplan
+
+.destroy_template: &destroy_template
+  stage: destroy
+  when: manual
+  <<: *terraform_init_template
+  script:
+    - (terraform workspace select ${CI_ENVIRONMENT_NAME} ||
+      terraform workspace new ${CI_ENVIRONMENT_NAME})
+    - terraform destroy
+      -var-file=base-${CI_ENVIRONMENT_NAME}.tfvars
+      -var-file=config-${CI_ENVIRONMENT_NAME}.tfvars
+      -auto-approve
+
+pre_setup_development:
+  stage: pre-setup
+  image:
+    name: amazon/aws-cli:2.0.7
+    entrypoint:
+      - env
+  variables:
+    BUCKET_NAME: devops-demo.tfstate
+  script:
+    - aws s3 ls s3://${BUCKET_NAME} ||
+      (aws s3 mb s3://${BUCKET_NAME} --region ${AWS_DEFAULT_REGION}
+        && aws s3api put-bucket-versioning --bucket ${BUCKET_NAME}
+        --versioning-configuration Status=Enabled)
+
+terraform_lint:
+  stage: code-quality
+  tags:
+    - linux
+  image:
+    name: wata727/tflint:0.15.5
+    entrypoint:
+      - env
+  script:
+    - tflint
+
+terraform_fmt:
+  stage: code-quality
+  tags:
+    - linux
+  script:
+    - terraform fmt -check
+
+yaml_lint:
+  stage: code-quality
+  tags:
+    - linux
+  image:
+    name: cytopia/yamllint:1.20
+    entrypoint:
+      - env
+  script:
+    - yamllint .
+
+validate_development:
+  stage: validate
+  <<: *terraform_init_template
+  script:
+    - terraform validate
+
+plan_development:
+  environment:
+    name: development
+  <<: *plan_template
+
+apply_development:
+  environment:
+    name: development
+  <<: *apply_template
+
+destroy_development:
+  environment:
+    name: development
+  <<: *destroy_template
