@@ -5,7 +5,7 @@ output "cluster_endpoint" {
 
 output "cluster_security_group_id" {
   description = "Security group ID attached to the EKS cluster"
-  value       = module.eks.cluster_security_group_id  # aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+  value       = module.eks.cluster_security_group_id # aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
 }
 
 output "cluster_name" {
