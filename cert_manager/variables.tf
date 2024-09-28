@@ -67,12 +67,6 @@ variable "Hostmaster" {
   type = string
 }
 
-
-variable "email" {
-  description = "The email address for lets encrypt"
-  type        = string
-}
-
 variable "chart_version" {
   description = "The chart version of cert manager. See https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm for examples"
   type        = string
