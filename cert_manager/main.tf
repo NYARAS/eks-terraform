@@ -60,7 +60,7 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: ${var.email}
+    email: ${var.Hostmaster}
     privateKeySecretRef:
       name: letsencrypt-staging
     solvers:
@@ -83,7 +83,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: ${var.email}
+    email: ${var.Hostmaster}
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
@@ -93,47 +93,42 @@ spec:
 EOF
 }
 
-resource "time_sleep" "wait_for_ssl_certs" {
-  triggers = {
-    helm_values = jsonencode(helm_release.cert_manager.values)
-  }
+resource "kubectl_manifest" "cluster-issuer" {
   depends_on = [helm_release.cert_manager]
-
-  create_duration = "30s"
+  yaml_body  = <<YAML
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ${var.Hostmaster}
+    privateKeySecretRef:
+      name: letsencrypt-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+YAML
 }
 
-resource "null_resource" "issuer_self_signed" {
-  triggers = {
-    issuer = local.issuer_self_signed
-  }
-
-  provisioner "local-exec" {
-    command = "echo '${local.issuer_self_signed}' | kubectl apply -f -"
-  }
-
-  depends_on = [local.issuer_self_signed, time_sleep.wait_for_ssl_certs]
-}
-
-resource "null_resource" "issuer_letsencrypt_staging" {
-  triggers = {
-    issuer = local.issuer_letsencrypt_staging
-  }
-
-  provisioner "local-exec" {
-    command = "echo '${local.issuer_letsencrypt_staging}' | kubectl apply -f -"
-  }
-
-  depends_on = [local.issuer_letsencrypt_staging, time_sleep.wait_for_ssl_certs]
-}
-
-resource "null_resource" "issuer_letsencrypt_prod" {
-  triggers = {
-    issuer = local.issuer_letsencrypt_prod
-  }
-
-  provisioner "local-exec" {
-    command = "echo '${local.issuer_letsencrypt_prod}' | kubectl apply -f -"
-  }
-
-  depends_on = [local.issuer_letsencrypt_prod, time_sleep.wait_for_ssl_certs]
+resource "kubectl_manifest" "cluster-issuer-staging" {
+  depends_on = [helm_release.cert_manager]
+  yaml_body  = <<YAML
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: ${var.Hostmaster}
+    privateKeySecretRef:
+      name: letsencrypt-staging-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+YAML
 }
