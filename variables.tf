@@ -103,3 +103,14 @@ variable "developer_users" {
   type        = list(string)
   description = "List of Kubernetes developers."
 }
+
+variable "region" {
+  default = "eu-west-1"
+}
+
+variable "Hostmaster" {
+  
+}
+variable "vpc_name" {
+  
+}
