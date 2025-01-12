@@ -5,18 +5,18 @@ module "eks" {
   cluster_version = "1.31"
   # subnet_ids      = module.vpc.private_subnets
   cluster_endpoint_public_access = true
-  create_iam_role   = false
-  iam_role_arn = aws_iam_role.eks-role.arn
+  create_iam_role                = false
+  iam_role_arn                   = aws_iam_role.eks-role.arn
 
-  cluster_enabled_log_types = []
+  cluster_enabled_log_types   = []
   create_cloudwatch_log_group = false
 
-  enable_irsa = true
+  enable_irsa                              = true
   enable_cluster_creator_admin_permissions = true
-  authentication_mode  = "API_AND_CONFIG_MAP"
-  vpc_id                         = var.vpc_id
-  subnet_ids                     = var.private_subnets
-  control_plane_subnet_ids       = var.private_subnets
+  authentication_mode                      = "API_AND_CONFIG_MAP"
+  vpc_id                                   = var.vpc_id
+  subnet_ids                               = var.private_subnets
+  control_plane_subnet_ids                 = var.private_subnets
   # manage_aws_auth_configmap = true
 
   tags = {
@@ -35,8 +35,8 @@ module "eks" {
   }
 
   eks_managed_node_group_defaults = {
-    ami_type               = "AL2_x86_64"
-    instance_types         = ["t3.medium"]
+    ami_type       = "AL2_x86_64"
+    instance_types = ["t3.medium"]
   }
   eks_managed_node_groups = {
     general-services = {
@@ -48,7 +48,7 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-        # node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
+      # node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
     }
 
     specific-services = {
@@ -62,7 +62,7 @@ module "eks" {
     }
   }
 
-    depends_on = [
+  depends_on = [
     aws_iam_role_policy_attachment.eks-AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.eks-AmazonEKSVPCResourceController,
   ]
