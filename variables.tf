@@ -109,8 +109,5 @@ variable "region" {
 }
 
 variable "Hostmaster" {
-  
-}
-variable "vpc_name" {
-  
+
 }
