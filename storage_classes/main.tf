@@ -6,7 +6,7 @@ module "ebs_csi_eks_role" {
 
   oidc_providers = {
     main = {
-      provider_arn = var.oidc_provider_arn
+      provider_arn               = var.oidc_provider_arn
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
@@ -30,7 +30,7 @@ resource "helm_release" "ebs_csi_driver" {
 
 // gp3 storageclass as default
 resource "kubectl_manifest" "gp3_storage_class" {
-  yaml_body  = <<YAML
+  yaml_body = <<YAML
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
