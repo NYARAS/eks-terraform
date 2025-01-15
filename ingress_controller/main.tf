@@ -67,7 +67,7 @@ resource "helm_release" "ingress-nginx" {
   version          = "4.10.0" // move this to variables
   values = [
     templatefile(
-       "${path.module}/chart_values.tmpl", {}
+      "${path.module}/chart_values.tmpl", {}
     )
   ]
 }

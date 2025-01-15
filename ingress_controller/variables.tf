@@ -29,7 +29,7 @@ variable "namespace" {
 
 variable "oidc_provider_arn" {
   description = "OIDC Provider ARN used for IRSA "
-  type = string
+  type        = string
 }
 variable "shared_resource_name" {
   description = "A short string value to identify the subdomain of your WAS installation as well as all resources that Terraform will create."
