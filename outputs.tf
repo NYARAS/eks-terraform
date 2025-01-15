@@ -10,7 +10,7 @@ output "cluster_endpoint" {
 
 output "cluster_id" {
   description = "EKS Cluster id."
-  value = module.eks.cluster_id
+  value       = module.eks.cluster_id
 }
 
 output "oidc_provider_arn" {
@@ -24,10 +24,10 @@ output "oidc_provider_arn_issuer" {
 
 output "cluster_certificate_authority_data" {
   description = "EKS Cluster certificate authority data."
-  value = module.eks.cluster_certificate_authority_data
+  value       = module.eks.cluster_certificate_authority_data
 }
 
 output "eks_role" {
   description = "EBS role."
-  value = module.eks.eks-role
+  value       = module.eks.eks-role
 }
