@@ -36,3 +36,8 @@ variable "shared_resource_name" {
   default     = "was"
   type        = string
 }
+
+variable "domain" {
+  type        = string
+  description = "The root domain."
+}
