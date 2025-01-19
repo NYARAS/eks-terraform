@@ -32,31 +32,12 @@ module "eks" {
     }
   }
 
-  eks_managed_node_group_defaults = {
-    ami_type       = "AL2_x86_64"
-    instance_types = ["t3.medium"]
-  }
-  eks_managed_node_groups = {
-    general-services = {
-      name = "general-services"
+  # eks_managed_node_group_defaults = {
+  #   ami_type       = "AL2_x86_64"
+  #   instance_types = ["t3.medium"]
+  # }
 
-      instance_types = ["t3.medium"]
-
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
-    }
-
-    specific-services = {
-      name = "specific-service"
-
-      instance_types = ["t3.small"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-    }
-  }
+  eks_managed_node_groups = var.eks_managed_node_groups
 
   depends_on = [
     aws_iam_role_policy_attachment.eks-AmazonEKSClusterPolicy,
