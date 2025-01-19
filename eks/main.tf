@@ -1,9 +1,8 @@
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "20.8.4"
-  cluster_name    = var.cluster_name
-  cluster_version = "1.31"
-  # subnet_ids      = module.vpc.private_subnets
+  source                         = "terraform-aws-modules/eks/aws"
+  version                        = "20.8.4"
+  cluster_name                   = var.cluster_name
+  cluster_version                = "1.31"
   cluster_endpoint_public_access = true
   create_iam_role                = false
   iam_role_arn                   = aws_iam_role.eks-role.arn
@@ -17,7 +16,6 @@ module "eks" {
   vpc_id                                   = var.vpc_id
   subnet_ids                               = var.private_subnets
   control_plane_subnet_ids                 = var.private_subnets
-  # manage_aws_auth_configmap = true
 
   tags = {
     cluster = "demo"
@@ -47,8 +45,6 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
-
-      # node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
     }
 
     specific-services = {
@@ -96,5 +92,3 @@ resource "aws_iam_role_policy_attachment" "eks-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.eks-role.name
 }
-
-
