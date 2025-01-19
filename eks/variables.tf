@@ -12,3 +12,8 @@ variable "private_subnets" {
   description = "List of private subnet IDs"
   type        = list(string)
 }
+
+variable "eks_managed_node_groups" {
+  type        = map(any)
+  description = "Map of EKS managed node group definitions to create"
+}
