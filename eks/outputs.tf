@@ -68,5 +68,6 @@ output "cluster_primary_security_group_id" {
 }
 
 output "eks-role" {
-  value = aws_iam_role.eks-role.name
+  description = "EKS role."
+  value       = aws_iam_role.eks-role.name
 }
