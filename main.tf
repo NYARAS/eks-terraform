@@ -8,9 +8,10 @@ module "vpc" {
 module "eks" {
   source = "./eks"
 
-  cluster_name    = var.cluster_name
-  vpc_id          = module.vpc.vpc_id
-  private_subnets = module.vpc.private_subnets
+  cluster_name            = var.cluster_name
+  vpc_id                  = module.vpc.vpc_id
+  eks_managed_node_groups = var.eks_managed_node_groups
+  private_subnets         = module.vpc.private_subnets
 }
 
 module "cert_manager" {
