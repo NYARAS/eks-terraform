@@ -44,6 +44,17 @@ module "eks" {
     aws_iam_role_policy_attachment.eks-AmazonEKSVPCResourceController,
   ]
 
+  cluster_security_group_additional_rules = {
+    ingress_node_vault_port = {
+      description                = "Vault Port"
+      protocol                   = "tcp"
+      from_port                  = 8200
+      to_port                    = 8200
+      type                       = "ingress"
+      source_node_security_group = true
+    }
+  }
+
 }
 
 data "aws_iam_policy_document" "assume_role" {
