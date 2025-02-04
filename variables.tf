@@ -111,3 +111,6 @@ variable "region" {
 variable "Hostmaster" {
 
 }
+variable "domain" {
+  
+}
