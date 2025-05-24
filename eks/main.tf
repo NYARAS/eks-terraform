@@ -2,7 +2,7 @@ module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
   version                        = "20.8.4"
   cluster_name                   = var.cluster_name
-  cluster_version                = "1.31"
+  cluster_version                = "1.32"
   cluster_endpoint_public_access = true
   create_iam_role                = false
   iam_role_arn                   = aws_iam_role.eks-role.arn
