@@ -112,5 +112,5 @@ variable "Hostmaster" {
 
 }
 variable "domain" {
-  
+
 }
