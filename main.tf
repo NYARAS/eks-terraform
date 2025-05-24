@@ -30,7 +30,7 @@ module "nginx_ingress_controller" {
   alb_controller_chart_repo    = var.alb_controller_chart_repo
   alb_controller_chart_version = var.alb_controller_chart_version
   oidc_provider_arn            = module.eks.oidc_provider_arn
-  domain = var.domain
+  domain                       = var.domain
 
   depends_on = [module.eks]
 }
