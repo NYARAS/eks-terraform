@@ -1,72 +1,48 @@
 module "eks" {
-  source                         = "terraform-aws-modules/eks/aws"
-  version                        = "20.8.4"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 20"
+
   cluster_name                   = var.cluster_name
-  cluster_version                = "1.32"
+  cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
-  create_iam_role                = false
-  iam_role_arn                   = aws_iam_role.eks-role.arn
+  # IPV6
+  cluster_ip_family          = var.cluster_ip_family
+  create_cni_ipv6_iam_policy = var.cluster_ip_family == "ipv6" ? true : false
+  vpc_id                     = var.vpc_id
+  subnet_ids                 = var.private_subnets
+  create_iam_role            = false
+  iam_role_arn               = aws_iam_role.eks-role.arn
 
-  cluster_enabled_log_types   = []
-  create_cloudwatch_log_group = false
+  create_cluster_security_group = false
+  create_node_security_group    = false
 
-  enable_irsa                              = true
   enable_cluster_creator_admin_permissions = true
-  authentication_mode                      = "API_AND_CONFIG_MAP"
-  vpc_id                                   = var.vpc_id
-  subnet_ids                               = var.private_subnets
-  control_plane_subnet_ids                 = var.private_subnets
-
-  tags = {
-    cluster = "demo"
+  eks_managed_node_groups                  = var.eks_managed_node_groups
+  cluster_upgrade_policy = {
+    support_type = "STANDARD"
   }
+  access_entries = {
 
-  cluster_addons = {
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-    }
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
-    vpc-cni = {
-      resolve_conflicts = "OVERWRITE"
-    }
   }
-
-  # eks_managed_node_group_defaults = {
-  #   ami_type       = "AL2_x86_64"
-  #   instance_types = ["t3.medium"]
-  # }
-
-  eks_managed_node_groups = var.eks_managed_node_groups
-
-  depends_on = [
-    aws_iam_role_policy_attachment.eks-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.eks-AmazonEKSVPCResourceController,
-  ]
-
-  cluster_security_group_additional_rules = {
-    ingress_node_vault_port = {
-      description                = "Vault Port"
-      protocol                   = "tcp"
-      from_port                  = 8200
-      to_port                    = 8200
-      type                       = "ingress"
-      source_node_security_group = true
-    }
-  }
-
+  # enable_irsa = true
+  tags = merge(local.tags, {
+    "karpenter.sh/discovery" = var.cluster_name
+  })
 }
 
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.55.0"
 
-    principals {
-      type        = "Service"
-      identifiers = ["eks.amazonaws.com"]
+  role_name_prefix      = "VPC-CNI-IRSA"
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true # NOTE: This was what needed to be added
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
     }
-
-    actions = ["sts:AssumeRole"]
   }
 }
 
@@ -83,4 +59,18 @@ resource "aws_iam_role_policy_attachment" "eks-AmazonEKSClusterPolicy" {
 resource "aws_iam_role_policy_attachment" "eks-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.eks-role.name
+}
+
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["eks.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
 }
