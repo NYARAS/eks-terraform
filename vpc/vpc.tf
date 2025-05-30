@@ -29,3 +29,8 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = "1"
   }
 }
+
+variable "vpc_name" {
+  description = "Name of the VPC"
+  type        = string
+}
