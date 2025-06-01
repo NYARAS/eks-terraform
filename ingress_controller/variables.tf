@@ -37,7 +37,7 @@ variable "shared_resource_name" {
   type        = string
 }
 
-variable "domain" {
-  type        = string
-  description = "The root domain."
-}
+# variable "domain" {
+#   type        = string
+#   description = "The root domain."
+# }
