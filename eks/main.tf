@@ -17,14 +17,11 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
   eks_managed_node_groups                  = var.eks_managed_node_groups
-  cluster_compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
-  }
   cluster_upgrade_policy = {
     support_type = "STANDARD"
   }
-  access_entries = {}
+  access_entries = {
+  }
 
   cluster_addons = {
     aws-ebs-csi-driver = {
