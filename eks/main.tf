@@ -3,13 +3,13 @@ module "eks" {
   version = "~> 20.24"
 
   cluster_name                   = var.cluster_name
-  cluster_version                = "1.30"
+  cluster_version                = "1.32"
   cluster_endpoint_public_access = true
   # IPV6
   cluster_ip_family          = var.cluster_ip_family
   create_cni_ipv6_iam_policy = var.cluster_ip_family == "ipv6" ? true : false
-  vpc_id                     = module.vpc.vpc_id
-  subnet_ids                 = module.vpc.private_subnets
+  vpc_id                     = var.vpc_id
+  subnet_ids                 = var.private_subnets
 
   # Fargate profiles use the cluster primary security group so these are not utilized
   create_cluster_security_group = false
