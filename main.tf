@@ -1,7 +1,6 @@
 module "vpc" {
   source       = "./vpc"
   vpc_name     = var.name_prefix
-  cluster_name = var.cluster_name
 }
 
 # EKS Module
@@ -19,7 +18,6 @@ module "cert_manager" {
   Hostmaster = var.Hostmaster
 
   depends_on = [module.eks]
-
 }
 
 module "nginx_ingress_controller" {
@@ -30,8 +28,6 @@ module "nginx_ingress_controller" {
   alb_controller_chart_repo    = var.alb_controller_chart_repo
   alb_controller_chart_version = var.alb_controller_chart_version
   oidc_provider_arn            = module.eks.oidc_provider_arn
-  domain                       = var.domain
-
   depends_on = [module.eks]
 }
 
