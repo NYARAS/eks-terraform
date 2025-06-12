@@ -1,0 +1,117 @@
+global:
+  domain: argocd.${hostname}
+  deploymentStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+controller:
+  resources:
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: "prometheus-operator"
+  podAnnotations:
+    co.elastic.logs/enabled: "true"
+
+repoServer:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  autoscaling:
+    enabled: ${autoscaling_enabled}
+  podAnnotations:
+    co.elastic.logs/enabled: "true"
+
+configs:
+  rbac:
+    create: true
+    policy.csv: |
+      p, role:org-admin, applications, *, */*, allow
+      p, role:org-admin, clusters, get, *, allow
+      p, role:org-admin, repositories, get, *, allow
+      p, role:org-admin, repositories, create, *, allow
+      p, role:org-admin, repositories, update, *, allow
+      p, role:org-admin, repositories, delete, *, allow
+      p, role:org-admin, projects, get, *, allow
+      p, role:org-admin, projects, create, *, allow
+      p, role:org-admin, projects, update, *, allow
+      p, role:org-admin, projects, delete, *, allow
+      p, role:org-admin, logs, get, *, allow
+      p, role:org-admin, exec, create, */*, allow
+
+      g, calvine, role:org-admin
+    policy.default: role:readonly
+
+server:
+  config:
+    accounts.admin: apiKey   #login is available as default on admin user
+    accounts.qa: apiKey,login
+  service:
+    type: NodePort
+    nodePortHttp: 30080
+    nodePortHttps: 30443
+  extraArgs:
+  - --insecure
+  resources:
+  limits:
+    cpu: 200m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: "prometheus-operator"
+  autoscaling:
+    enabled: ${autoscaling_enabled}
+  # Argo CD server ingress configuration
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: ${issuer_name}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    ingressClassName: ${ingress_class_name}
+    hostname: argocd.${hostname}
+    path: /
+    pathType: Prefix
+    tls: true
+  podAnnotations:
+    co.elastic.logs/enabled: "true"
+
+redis:
+  enabled: true
+  resources:
+  limits:
+    cpu: 500m
+    memory: 750Mi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: "prometheus-operator"
+  podAnnotations:
+    co.elastic.logs/enabled: "true"
+
+redis-ha:
+  enabled: ${redis_ha_enable}
+  exporter:
+    enabled: true
