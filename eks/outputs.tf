@@ -67,7 +67,7 @@ output "cluster_primary_security_group_id" {
   value       = module.eks.cluster_primary_security_group_id
 }
 
-output "eks-role" {
-  description = "EKS role."
-  value       = aws_iam_role.eks-role.name
-}
+# output "eks-role" {
+#   description = "EKS role."
+#   value       = aws_iam_role.eks-role.name
+# }
