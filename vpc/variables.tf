@@ -1,9 +1,23 @@
 variable "vpc_name" {
-  description = "Name of the VPC"
   type        = string
+  description = "Name of the VPC"
+  default     = "VPC-EKS-Cluster"
 }
 
-variable "cluster_name" {
-  description = "Name of the EKS cluster"
+variable "vpc_cidr_block" {
   type        = string
+  description = "Base CIDR Block for VPC"
+  default     = "10.0.0.0/16"
+}
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "Name of the EKS Cluster"
+  default     = "CT-EKS-Cluster"
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment for deployment"
+  default     = "DEV"
 }
